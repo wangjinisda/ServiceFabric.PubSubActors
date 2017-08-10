@@ -1,14 +1,18 @@
 ﻿using Microsoft.ServiceFabric.Data;
 using Microsoft.ServiceFabric.Data.Collections;
-using Microsoft.ServiceFabric.Services.Runtime;
 using ServiceFabric.PubSubActors.Interfaces;
 using ServiceFabric.PubSubActors.State;
 using System;
 using System.Fabric;
 using System.Threading.Tasks;
 using System.Threading;
-using ServiceFabric.PubSubActors.PublisherActors;
-using ServiceFabric.PubSubActors.SubscriberServices;
+using Microsoft.ServiceFabric.Services.Communication.Runtime;
+using System.Collections.Generic;
+using Microsoft.ServiceFabric.Services.Communication.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using Microsoft.Extensions.DependencyInjection;
+using ServiceFabric.PubSubActors.WebExtension;
 
 namespace ServiceFabric.PubSubActors
 {
@@ -18,16 +22,28 @@ namespace ServiceFabric.PubSubActors
     /// and forwards them to <see cref="ISubscriberActor"/> Actors and <see cref="ISubscriberService"/> Services with strict ordering, so less performant than <see cref="BrokerServiceUnordered"/>. 
     /// Every message type is mapped to one of the partitions of this service.
     /// </remarks>
-    public abstract class BrokerService : BrokerServiceBase
-    {/// <summary>
-     /// Creates a new instance using the provided context and registers this instance for automatic discovery if needed.
-     /// </summary>
-     /// <param name="serviceContext"></param>
-     /// <param name="enableAutoDiscovery"></param>
-        protected BrokerService(StatefulServiceContext serviceContext, bool enableAutoDiscovery = true)
+    public abstract class BrokerServiceWithWebListener : BrokerServiceBase
+    {
+        /// <summary>
+		/// serviceEndpoint for web listener
+		/// </summary>
+		protected readonly string serviceEndpoint = null;
+
+
+        /// <summary>
+        /// 1: Creates a new instance using the provided context
+        /// 2: provide serviceEndpoint name to enable http function
+        /// 3: registers this instance for automatic discovery if needed.
+        /// </summary>
+        /// <param name="serviceContext"></param>
+        /// <param name="serviceEndpoint"></param>
+        /// <param name="enableAutoDiscovery"></param>
+        protected BrokerServiceWithWebListener(StatefulServiceContext serviceContext, string serviceEndpoint = null, bool enableAutoDiscovery = true)
             : base(serviceContext, enableAutoDiscovery)
         {
+            this.serviceEndpoint = serviceEndpoint;
         }
+
 
         /// <summary>
         /// Creates a new instance using the provided context and registers this instance for automatic discovery if needed.
@@ -35,7 +51,7 @@ namespace ServiceFabric.PubSubActors
         /// <param name="serviceContext"></param>
         /// <param name="reliableStateManagerReplica"></param>
         /// <param name="enableAutoDiscovery"></param>
-        protected BrokerService(StatefulServiceContext serviceContext, IReliableStateManagerReplica reliableStateManagerReplica, bool enableAutoDiscovery = true)
+        protected BrokerServiceWithWebListener(StatefulServiceContext serviceContext, IReliableStateManagerReplica reliableStateManagerReplica, bool enableAutoDiscovery = true)
             : base(serviceContext, reliableStateManagerReplica, enableAutoDiscovery)
         {
         }
@@ -84,5 +100,41 @@ namespace ServiceFabric.PubSubActors
         {
             return StateManager.GetOrAddAsync<IReliableQueue<MessageWrapper>>(tx, queueName);
         }
+
+        /// <summary>
+        /// override base <see cref="BrokerServiceBase.CreateServiceReplicaListeners"/>
+        /// </summary>
+        /// <returns></returns>
+        protected override IEnumerable<ServiceReplicaListener> CreateServiceReplicaListeners()
+        {
+            //add the pubsub listener
+            foreach (var listener in base.CreateServiceReplicaListeners())
+            {
+                yield return listener;
+            }
+            if (this.serviceEndpoint == null)
+            {
+                yield break;
+            }
+            else
+            {
+                yield return new ServiceReplicaListener(serviceContext =>
+                    new WebListenerCommunicationListener(serviceContext, this.serviceEndpoint, (url, listener) =>
+                    {
+                        return new WebHostBuilder().UseWebListener()
+                                    .ConfigureServices(
+                                        services => services
+                                            .AddSingleton<StatefulServiceContext>(serviceContext))
+                                    .UseContentRoot(Directory.GetCurrentDirectory())
+                                    .UseStartup<Startup>()
+                                    .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
+                                    .UseUrls(url)
+                                    .Build();
+                    }));
+
+            }
+
+        }
+
     }
 }
