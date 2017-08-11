@@ -30,7 +30,13 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PublishingActor\PublishingActor.csproj" />
+    <ProjectReference Include="..\PublishingStatelessService\PublishingStatelessService.csproj" />
+    <ProjectReference Include="..\PubSubActor\PubSubActor.csproj" />
     <ProjectReference Include="..\PubSubService\PubSubService.csproj" />
+    <ProjectReference Include="..\SubscribingActor\SubscribingActor.csproj" />
+    <ProjectReference Include="..\SubscribingStatefulService\SubscribingStatefulService.csproj" />
+    <ProjectReference Include="..\SubscribingStatelessService\SubscribingStatelessService.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <PropertyGroup>

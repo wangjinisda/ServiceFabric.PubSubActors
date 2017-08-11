@@ -130,20 +130,28 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common.DataContracts\Common.DataContracts.csproj">
-      <Project>{1a90aae2-4ceb-4c60-a024-f9f5b517d38a}</Project>
+    <ProjectReference Include="..\..\ServiceFabric.PubSubActors.Http\Common.DataContracts\Common.DataContracts.csproj">
+      <Project>{ce97ae1c-71b2-4b1c-994a-2b21119551a8}</Project>
       <Name>Common.DataContracts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PublishingActor.Interfaces\PublishingActor.Interfaces.csproj">
-      <Project>{915b97d7-5a58-4617-b508-1825062fdad9}</Project>
+    <ProjectReference Include="..\..\ServiceFabric.PubSubActors.Http\PublishingActor.Interfaces\PublishingActor.Interfaces.csproj">
+      <Project>{5d36739f-44ea-447e-80a1-1771d2a7c4ac}</Project>
       <Name>PublishingActor.Interfaces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SubscribingActor.Interfaces\SubscribingActor.Interfaces.csproj">
-      <Project>{2b3cbc59-7925-42bb-9ea3-b45994c83725}</Project>
+    <ProjectReference Include="..\..\ServiceFabric.PubSubActors.Http\PublishingStatelessService\PublishingStatelessService.csproj">
+      <Project>{c412dbf2-aa9a-4970-a0e4-f4d471a455f5}</Project>
+      <Name>PublishingStatelessService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ServiceFabric.PubSubActors.Http\SubscribingActor.Interfaces\SubscribingActor.Interfaces.csproj">
+      <Project>{5f0d1248-aaae-4d2e-a04f-75ccbb74fc81}</Project>
       <Name>SubscribingActor.Interfaces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SubscribingStatelessService\SubscribingStatelessService.csproj">
-      <Project>{C6AEE050-41BD-4F06-A392-E479B833DC7D}</Project>
+    <ProjectReference Include="..\..\ServiceFabric.PubSubActors.Http\SubscribingStatefulService\SubscribingStatefulService.csproj">
+      <Project>{194545fb-09a0-46a8-a559-c4228ebd592e}</Project>
+      <Name>SubscribingStatefulService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ServiceFabric.PubSubActors.Http\SubscribingStatelessService\SubscribingStatelessService.csproj">
+      <Project>{256f85de-dfb5-41be-9c25-8981e83e6b70}</Project>
       <Name>SubscribingStatelessService</Name>
     </ProjectReference>
   </ItemGroup>
