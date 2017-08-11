@@ -21,7 +21,7 @@ namespace TestClient
     {
         static void Main(string[] args)
         {
-            var applicationName = "fabric:/MyServiceFabricApp";
+            var applicationName = "fabric:/SF.PubSubActors.HttpType";
             var serviceName = $"{applicationName}/PublishingStatelessService";
             var pubActor = GetPublishingActor(applicationName);
             var pubService = GetPublishingService(new Uri(serviceName));

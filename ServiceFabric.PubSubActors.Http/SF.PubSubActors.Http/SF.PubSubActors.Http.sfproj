@@ -37,6 +37,7 @@
     <ProjectReference Include="..\SubscribingActor\SubscribingActor.csproj" />
     <ProjectReference Include="..\SubscribingStatefulService\SubscribingStatefulService.csproj" />
     <ProjectReference Include="..\SubscribingStatelessService\SubscribingStatelessService.csproj" />
+    <ProjectReference Include="..\WebClient\WebClient.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <PropertyGroup>
