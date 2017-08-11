@@ -35,7 +35,10 @@ namespace PublishingStatelessService
 		/// <returns>The collection of listeners.</returns>
 		protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
-            yield return new ServiceInstanceListener(context => new FabricTransportServiceRemotingListener(context, this), "StatelessFabricTransportServiceRemotingListener");
+            yield return new ServiceInstanceListener(context => {
+                
+                return new FabricTransportServiceRemotingListener(context, this);
+            }, "StatelessFabricTransportServiceRemotingListener");
 		}
 
     /// <summary>
